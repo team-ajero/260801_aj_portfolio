@@ -2,6 +2,9 @@
 
 import { motion } from "framer-motion";
 import { useState } from "react"; // 필터 상태 관리용
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/app/components/ui/tabs";
+import { Card } from "@/app/components/ui/card";
+import { Badge } from "@/app/components/ui/badge";
 
 // 카테고리 필터 목록
 const categories = ["전체", "아파트", "주택", "상업공간"];
@@ -40,41 +43,53 @@ export default function WorksGallery() {
       </motion.div>
 
       {/* 카테고리 필터 */}
-      <div className="flex gap-6 mb-16">
-        {categories.map((cat) => (
-          <button
-            key={cat}
-            onClick={() => setActiveCategory(cat)}
-            className={`text-sm tracking-wide transition-opacity duration-300 ${
-              activeCategory === cat ? "opacity-100" : "opacity-30 hover:opacity-60"
-            }`}
-          >
-            {cat}
-          </button>
-        ))}
-      </div>
+      <Tabs value={activeCategory} onValueChange={setActiveCategory} className="mb-16">
+        <TabsList className="bg-transparent p-0 h-auto gap-6 justify-start">
+          {categories.map((cat) => (
+            <TabsTrigger
+              key={cat}
+              value={cat}
+              className="text-sm tracking-wide px-0 py-0 h-auto rounded-none bg-transparent shadow-none data-[state=active]:bg-transparent data-[state=active]:shadow-none data-[state=active]:opacity-100 opacity-30 hover:opacity-60 transition-opacity duration-300"
+            >
+              {cat}
+            </TabsTrigger>
+          ))}
+        </TabsList>
 
-      {/* 시공사례 그리드 */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-px bg-black/10">
-        {filtered.map((work, index) => (
-          <motion.div
-            key={work.id}
-            className="bg-white p-10 hover:bg-black/5 transition-colors duration-300 cursor-pointer"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: index * 0.05 }}
-          >
-            {/* 이미지 자리 (Sanity 연결 후 교체 예정) */}
-            <div className="w-full aspect-video bg-black/5 mb-6" />
-            <p className="text-xs tracking-widest uppercase text-black/30 mb-2">{work.category}</p>
-            <h3 className="text-lg font-light mb-4">{work.title}</h3>
-            <div className="flex gap-6 text-xs text-black/40">
-              <span>{work.area}</span>
-              <span>{work.year}</span>
-            </div>
-          </motion.div>
-        ))}
-      </div>
+        <TabsContent value={activeCategory} className="mt-16">
+          {/* 시공사례 그리드 */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-px bg-black/10">
+            {filtered.map((work, index) => (
+              <motion.div
+                key={work.id}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: index * 0.05 }}
+              >
+                <Card className="rounded-none border-none shadow-none bg-white p-10 gap-0 hover:bg-black/5 transition-colors duration-300 cursor-pointer">
+                  {/* 이미지 자리 (Sanity 연결 후 교체 예정) */}
+                  <div className="w-full aspect-video bg-black/5 mb-6" />
+                  <Badge
+                    variant="outline"
+                    className="text-black/40 border-black/20 rounded-none px-0 border-0 text-xs tracking-widest uppercase mb-2"
+                  >
+                    {work.category}
+                  </Badge>
+                  <h3 className="text-lg font-light mb-4">{work.title}</h3>
+                  <div className="flex gap-2">
+                    <Badge variant="secondary" className="rounded-none text-xs text-black/40 bg-black/5">
+                      {work.area}
+                    </Badge>
+                    <Badge variant="secondary" className="rounded-none text-xs text-black/40 bg-black/5">
+                      {work.year}
+                    </Badge>
+                  </div>
+                </Card>
+              </motion.div>
+            ))}
+          </div>
+        </TabsContent>
+      </Tabs>
     </section>
   );
 }

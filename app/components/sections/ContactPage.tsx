@@ -2,7 +2,18 @@
 
 import { motion } from "framer-motion";
 import { useState } from "react";
+import { toast } from "sonner";
 import Button from "@/app/components/common/Button";
+import { Input } from "@/app/components/ui/input";
+import { Textarea } from "@/app/components/ui/textarea";
+import { Label } from "@/app/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/app/components/ui/select";
 
 // 폼 데이터 타입 정의
 interface FormData {
@@ -25,17 +36,28 @@ export default function ContactPage() {
     message: "",
   });
 
-  // input 변경 시 상태 업데이트
+  // input/textarea 변경 시 상태 업데이트
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  // 폼 제출 (나중에 API 연결 예정)
+  // shadcn Select는 onValueChange 콜백으로 값을 전달 (네이티브 onChange와 다름)
+  const handleSelectChange = (value: string) => {
+    setFormData((prev) => ({ ...prev, type: value }));
+  };
+
+  // 폼 제출 (API 연동 전까지는 toast로 성공 피드백만 처리)
   const handleSubmit = () => {
+    if (!formData.name || !formData.phone) {
+      toast.error("이름과 연락처는 필수 입력 항목이에요.");
+      return;
+    }
     console.log("제출된 데이터:", formData);
+    toast.success("문의가 접수됐어요. 빠르게 연락드릴게요.");
+    setFormData({ name: "", phone: "", email: "", type: "", area: "", message: "" });
   };
 
   return (
@@ -85,63 +107,81 @@ export default function ContactPage() {
         >
           {/* 이름 + 연락처 */}
           <div className="flex gap-6">
-            <input
-              name="name"
-              value={formData.name}
-              onChange={handleChange}
-              placeholder="이름"
-              className="w-1/2 border-b border-black/20 pb-4 text-sm outline-none placeholder:text-black/30 focus:border-black transition-colors duration-300"
-            />
-            <input
-              name="phone"
-              value={formData.phone}
-              onChange={handleChange}
-              placeholder="연락처"
-              className="w-1/2 border-b border-black/20 pb-4 text-sm outline-none placeholder:text-black/30 focus:border-black transition-colors duration-300"
-            />
+            <div className="w-1/2 flex flex-col gap-2">
+              <Label htmlFor="name" className="text-xs tracking-widest uppercase text-black/40">이름</Label>
+              <Input
+                id="name"
+                name="name"
+                value={formData.name}
+                onChange={handleChange}
+                placeholder="이름"
+              />
+            </div>
+            <div className="w-1/2 flex flex-col gap-2">
+              <Label htmlFor="phone" className="text-xs tracking-widest uppercase text-black/40">연락처</Label>
+              <Input
+                id="phone"
+                name="phone"
+                value={formData.phone}
+                onChange={handleChange}
+                placeholder="연락처"
+              />
+            </div>
           </div>
 
           {/* 이메일 */}
-          <input
-            name="email"
-            value={formData.email}
-            onChange={handleChange}
-            placeholder="이메일"
-            className="border-b border-black/20 pb-4 text-sm outline-none placeholder:text-black/30 focus:border-black transition-colors duration-300"
-          />
-
-          {/* 시공 종류 + 평수 */}
-          <div className="flex gap-6">
-            <select
-              name="type"
-              value={formData.type}
+          <div className="flex flex-col gap-2">
+            <Label htmlFor="email" className="text-xs tracking-widest uppercase text-black/40">이메일</Label>
+            <Input
+              id="email"
+              name="email"
+              type="email"
+              value={formData.email}
               onChange={handleChange}
-              className="w-1/2 border-b border-black/20 pb-4 text-sm outline-none text-black/50 focus:border-black transition-colors duration-300 bg-transparent"
-            >
-              <option value="">시공 종류 선택</option>
-              <option value="아파트">아파트 인테리어</option>
-              <option value="상업공간">상업공간 설계</option>
-              <option value="부분시공">부분 시공</option>
-              <option value="상담">3D 설계 상담</option>
-            </select>
-            <input
-              name="area"
-              value={formData.area}
-              onChange={handleChange}
-              placeholder="평수 (예: 30평)"
-              className="w-1/2 border-b border-black/20 pb-4 text-sm outline-none placeholder:text-black/30 focus:border-black transition-colors duration-300"
+              placeholder="이메일"
             />
           </div>
 
+          {/* 시공 종류 + 평수 */}
+          <div className="flex gap-6">
+            <div className="w-1/2 flex flex-col gap-2">
+              <Label htmlFor="type" className="text-xs tracking-widest uppercase text-black/40">시공 종류</Label>
+              <Select value={formData.type} onValueChange={handleSelectChange}>
+                <SelectTrigger id="type" className="w-full">
+                  <SelectValue placeholder="시공 종류 선택" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="아파트">아파트 인테리어</SelectItem>
+                  <SelectItem value="상업공간">상업공간 설계</SelectItem>
+                  <SelectItem value="부분시공">부분 시공</SelectItem>
+                  <SelectItem value="상담">3D 설계 상담</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="w-1/2 flex flex-col gap-2">
+              <Label htmlFor="area" className="text-xs tracking-widest uppercase text-black/40">평수</Label>
+              <Input
+                id="area"
+                name="area"
+                value={formData.area}
+                onChange={handleChange}
+                placeholder="평수 (예: 30평)"
+              />
+            </div>
+          </div>
+
           {/* 요청사항 */}
-          <textarea
-            name="message"
-            value={formData.message}
-            onChange={handleChange}
-            placeholder="요청사항을 자유롭게 작성해주세요"
-            rows={5}
-            className="border-b border-black/20 pb-4 text-sm outline-none placeholder:text-black/30 focus:border-black transition-colors duration-300 resize-none"
-          />
+          <div className="flex flex-col gap-2">
+            <Label htmlFor="message" className="text-xs tracking-widest uppercase text-black/40">요청사항</Label>
+            <Textarea
+              id="message"
+              name="message"
+              value={formData.message}
+              onChange={handleChange}
+              placeholder="요청사항을 자유롭게 작성해주세요"
+              rows={5}
+            />
+          </div>
 
           {/* 제출 버튼 */}
           <div className="flex justify-end">

@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import Nav from "./components/common/Nav";
 import Footer from "./components/common/Footer";
+import { Toaster } from "./components/ui/sonner";
 
 const notoSansKR = Noto_Sans_KR({
   subsets: ["latin"],
@@ -22,6 +23,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         <Nav />
         <main className="flex-1 px-24">{children}</main>
         <Footer />
+        <Toaster />
       </body>
     </html>
   );

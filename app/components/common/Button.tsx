@@ -1,40 +1,42 @@
 // "use client" 불필요: 인터랙션은 onClick props으로 부모에서 처리
 import Link from "next/link";
+import { Button as ShadcnButton } from "@/app/components/ui/button";
 
 // 버튼이 가질 수 있는 props 타입 정의
 interface ButtonProps {
-  label: string;                        
-  href?: string;                        
-  onClick?: () => void;                 
-  variant?: "primary" | "secondary";   
-  type?: "button" | "submit";         
+  label: string;
+  href?: string;
+  onClick?: () => void;
+  variant?: "primary" | "secondary";
+  type?: "button" | "submit";
 }
+
+// primary/secondary → shadcn Button 기본 variant로 매핑
+const variantMap = {
+  primary: "default",
+  secondary: "outline",
+} as const;
 
 export default function Button({
   label,
   href,
   onClick,
-  variant = "primary", 
+  variant = "primary",
   type = "button",
 }: ButtonProps) {
-
-  const baseStyle = "inline-block text-sm tracking-widest uppercase transition-all duration-300 px-8 py-4";
-  const styles = {
-    primary: `${baseStyle} bg-black text-white hover:bg-white hover:text-black border border-black`,
-    secondary: `${baseStyle} bg-transparent text-black border border-black hover:bg-black hover:text-white`,
-  };
+  const shadcnVariant = variantMap[variant];
 
   if (href) {
     return (
-      <Link href={href} className={styles[variant]}>
-        {label}
-      </Link>
+      <ShadcnButton asChild variant={shadcnVariant}>
+        <Link href={href}>{label}</Link>
+      </ShadcnButton>
     );
   }
 
   return (
-    <button type={type} onClick={onClick} className={styles[variant]}>
+    <ShadcnButton type={type} onClick={onClick} variant={shadcnVariant}>
       {label}
-    </button>
+    </ShadcnButton>
   );
 }
