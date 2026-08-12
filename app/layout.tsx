@@ -21,7 +21,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
     <html lang="ko" className={notoSansKR.className}>
       <body className="min-h-screen flex flex-col">
         <Nav />
-        <main className="flex-1 px-24">{children}</main>
+        <main className="flex-1">{children}</main>
         <Footer />
         <Toaster />
       </body>
