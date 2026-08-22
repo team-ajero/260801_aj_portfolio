@@ -34,7 +34,7 @@ export default function ServicesSection() {
   const isInView = useInView(ref, { once: true, margin: "-100px" });
 
   return (
-    <section ref={ref} className="py-32 bg-black text-white">
+    <section ref={ref} className="py-20 md:py-32  bg-black text-white">
       <Container>
 
         {/* 섹션 헤더 */}
@@ -45,7 +45,7 @@ export default function ServicesSection() {
           transition={{ duration: 0.7, ease: "easeOut" }}
         >
           <p className="text-sm tracking-widest uppercase text-white/40 mb-4">Services</p>
-          <h2 className="text-4xl font-light tracking-tight">서비스 소개</h2>
+          <h2 className="text-2xl md:text-3xl lg:text-4xl font-light tracking-tight">서비스 소개</h2>
         </motion.div>
 
         {/* 서비스 카드 그리드 */}

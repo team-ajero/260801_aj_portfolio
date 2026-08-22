@@ -10,7 +10,7 @@ export default function CTASection() {
   const isInView = useInView(ref, { once: true, margin: "-100px" });
 
   return (
-    <section ref={ref} className="py-40 flex flex-col items-center text-center">
+    <section ref={ref} className="py-24 md:py-32 lg:py-40 flex flex flex-col items-center text-center">
       <Container className="max-w-2xl mx-auto">
 
         {/* 섹션 라벨 */}
@@ -25,7 +25,7 @@ export default function CTASection() {
 
         {/* 메인 카피 */}
         <motion.h2
-          className="text-5xl font-light tracking-tight leading-tight mb-8"
+          className="text-3xl md:text-4xl lg:text-5xl font-light tracking-tight leading-tight mb-8"
           initial={{ opacity: 0, y: 20 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.7, ease: "easeOut", delay: 0.1 }}

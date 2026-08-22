@@ -15,14 +15,25 @@ import {
 const navLinks = [
   { href: "/works", label: "시공사례" },
   { href: "/services", label: "서비스" },
+  { href: "/about", label: "회사소개" },
+  { href: "/reviews", label: "고객후기" },
+  { href: "/faq", label: "FAQ" },
   { href: "/contact", label: "견적문의" },
 ];
 
 export default function Nav() {
   const pathname = usePathname();
+  const isHome = pathname === "/";
   const { scrollY } = useScroll();
   const bgOpacity = useTransform(scrollY, [0, 80], [0, 1]);
   const borderOpacity = useTransform(scrollY, [0, 80], [0, 0.1]);
+  // 메인 페이지는 Hero가 다크 배경이라 스크롤 전엔 흰 텍스트, 스크롤하면 검정으로 전환
+  // 다른 페이지는 처음부터 흰 배경이라 항상 검정 유지
+  const textColor = useTransform(
+    scrollY,
+    [0, 80],
+    isHome ? ["#ffffff", "#000000"] : ["#000000", "#000000"]
+  );
 
   return (
     <motion.header
@@ -32,6 +43,7 @@ export default function Nav() {
         borderBottom: "1px solid black",
         borderColor: useTransform(borderOpacity, (v) => `rgba(0,0,0,${v})`),
         backdropFilter: "blur(10px)",
+        color: textColor,
       }}
     >
       <Link href="/" className="text-sm font-medium tracking-widest uppercase">

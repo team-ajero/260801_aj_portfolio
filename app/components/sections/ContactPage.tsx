@@ -61,7 +61,7 @@ export default function ContactPage() {
   };
 
   return (
-    <section className="pt-40 pb-32">
+    <section className="pt-28 md:pt-40 pb-20 md:pb-32">
 
       {/* 페이지 헤더 */}
       <motion.div
@@ -71,14 +71,14 @@ export default function ContactPage() {
         transition={{ duration: 0.7, ease: "easeOut" }}
       >
         <p className="text-sm tracking-widest uppercase text-black/40 mb-4">Contact</p>
-        <h1 className="text-5xl font-light tracking-tight">견적 문의</h1>
+        <h1 className="text-3xl md:text-4xl lg:text-5xl font-light tracking-tight">견적 문의</h1>
       </motion.div>
 
-      <div className="flex flex-col md:flex-row gap-24">
+      <div className="flex flex-col md:flex-row gap-12 md:gap-24">
 
         {/* 왼쪽: 연락처 정보 */}
         <motion.div
-          className="md:w-1/3"
+          className="md:w-1/3 order-2 md:order-1"
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.7, ease: "easeOut", delay: 0.1 }}
@@ -100,14 +100,14 @@ export default function ContactPage() {
 
         {/* 오른쪽: 문의 폼 */}
         <motion.div
-          className="md:w-2/3 flex flex-col gap-8"
+          className="md:w-2/3 flex flex-col gap-8 order-1 md:order-2"
           initial={{ opacity: 0, x: 20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.7, ease: "easeOut", delay: 0.2 }}
         >
           {/* 이름 + 연락처 */}
-          <div className="flex gap-6">
-            <div className="w-1/2 flex flex-col gap-2">
+          <div className="flex flex-col sm:flex-row gap-6">
+            <div className="w-full sm:w-1/2 flex flex-col gap-2">
               <Label htmlFor="name" className="text-xs tracking-widest uppercase text-black/40">이름</Label>
               <Input
                 id="name"
@@ -117,7 +117,7 @@ export default function ContactPage() {
                 placeholder="이름"
               />
             </div>
-            <div className="w-1/2 flex flex-col gap-2">
+            <div className="w-full sm:w-1/2 flex flex-col gap-2">
               <Label htmlFor="phone" className="text-xs tracking-widest uppercase text-black/40">연락처</Label>
               <Input
                 id="phone"
@@ -143,8 +143,8 @@ export default function ContactPage() {
           </div>
 
           {/* 시공 종류 + 평수 */}
-          <div className="flex gap-6">
-            <div className="w-1/2 flex flex-col gap-2">
+          <div className="flex flex-col sm:flex-row gap-6">
+            <div className="w-full sm:w-1/2 flex flex-col gap-2">
               <Label htmlFor="type" className="text-xs tracking-widest uppercase text-black/40">시공 종류</Label>
               <Select value={formData.type} onValueChange={handleSelectChange}>
                 <SelectTrigger id="type" className="w-full">
@@ -158,7 +158,7 @@ export default function ContactPage() {
                 </SelectContent>
               </Select>
             </div>
-            <div className="w-1/2 flex flex-col gap-2">
+            <div className="w-full sm:w-1/2 flex flex-col gap-2">
               <Label htmlFor="area" className="text-xs tracking-widest uppercase text-black/40">평수</Label>
               <Input
                 id="area"

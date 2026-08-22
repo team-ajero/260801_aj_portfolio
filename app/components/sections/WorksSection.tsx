@@ -1,22 +1,40 @@
 "use client"
 
-import { motion, useInView } from "framer-motion";
-import { useRef } from "react";
+import { motion, useInView, useMotionValue, useSpring, AnimatePresence } from "framer-motion";
+import { useRef, useState } from "react";
+import Image from "next/image";
 import Button from "@/app/components/common/Button";
 import { Container } from "@/app/components/common/Container";
 
+// 이미지는 WorksGallery(/works)와 동일한 mock 파일 재사용
 const works = [
-    { id: 1, title: "강남 아파트", category: "아파트", area: "84㎡", year: "2024" },
-    { id: 2, title: "성수 오피스", category: "상업공간", area: "120㎡", year: "2024" },
-    { id: 3, title: "마포 주택", category: "주택", area: "65㎡", year: "2023" },
+    { id: 1, title: "강남 아파트", category: "아파트", area: "84㎡", year: "2024", image: "/images/works/gangnam-apt.jpg" },
+    { id: 2, title: "성수 오피스", category: "상업공간", area: "120㎡", year: "2024", image: "/images/works/seongsu-office.jpg" },
+    { id: 3, title: "마포 주택", category: "주택", area: "65㎡", year: "2023", image: "/images/works/mapo-house.jpg" },
 ];
 
 export default function WorksSection() {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-100px" });
 
+  // 현재 마우스를 올리고 있는 항목 (플로팅 미리보기 표시용)
+  const [hoveredId, setHoveredId] = useState<number | null>(null);
+  const hoveredWork = works.find((w) => w.id === hoveredId);
+
+  // 마우스 위치를 부드럽게(스프링) 따라가는 플로팅 박스 좌표
+  const mouseX = useMotionValue(0);
+  const mouseY = useMotionValue(0);
+  const springX = useSpring(mouseX, { stiffness: 300, damping: 30 });
+  const springY = useSpring(mouseY, { stiffness: 300, damping: 30 });
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    mouseX.set(e.clientX - rect.left);
+    mouseY.set(e.clientY - rect.top);
+  };
+
   return (
-    <section ref={ref} className="py-32">
+    <section ref={ref} className="py-20 md:py-32">
       <Container>
 
         {/* 섹션 헤더 */}
@@ -28,17 +46,22 @@ export default function WorksSection() {
         >
           <div>
             <p className="text-sm tracking-widest uppercase text-black/40 mb-4">Works</p>
-            <h2 className="text-4xl font-light tracking-tight">시공사례</h2>
+            <h2 className="text-2xl md:text-3xl lg:text-4xl font-light tracking-tight">시공사례</h2>
           </div>
           <Button label="전체 보기" href="/works" variant="secondary" />
         </motion.div>
 
         {/* 시공사례 카드 목록 */}
-        <div className="flex flex-col divide-y divide-black/10">
+        <div
+          className="relative flex flex-col divide-y divide-black/10"
+          onMouseMove={handleMouseMove}
+        >
           {works.map((work, index) => (
             <motion.div
               key={work.id}
               className="flex items-center justify-between py-8 group cursor-pointer"
+              onMouseEnter={() => setHoveredId(work.id)}
+              onMouseLeave={() => setHoveredId(null)}
               initial={{ opacity: 0, y: 20 }}
               animate={isInView ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.5, delay: index * 0.1 }}
@@ -59,6 +82,28 @@ export default function WorksSection() {
               </div>
             </motion.div>
           ))}
+
+          {/* 마우스를 따라다니는 플로팅 이미지 미리보기 (데스크톱 전용, 호버 없는 터치기기는 자동 비활성) */}
+          <AnimatePresence>
+            {hoveredWork && (
+              <motion.div
+                className="hidden md:block absolute top-0 left-0 z-10 w-64 h-80 -ml-32 -mt-40 pointer-events-none overflow-hidden bg-black/5"
+                style={{ x: springX, y: springY }}
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.9 }}
+                transition={{ duration: 0.3, ease: "easeOut" }}
+              >
+                <Image
+                  src={hoveredWork.image}
+                  alt={hoveredWork.title}
+                  fill
+                  className="object-cover"
+                  sizes="256px"
+                />
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
       </Container>
     </section>
