@@ -1,8 +1,6 @@
 import { Noto_Sans_KR } from "next/font/google";
 import type { Metadata } from "next";
 import "./globals.css";
-import Nav from "./components/common/Nav";
-import Footer from "./components/common/Footer";
 import { Toaster } from "./components/ui/sonner";
 
 const notoSansKR = Noto_Sans_KR({
@@ -20,9 +18,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
   return (
     <html lang="ko" className={notoSansKR.className}>
       <body className="min-h-screen flex flex-col">
-        <Nav />
-        <main className="flex-1">{children}</main>
-        <Footer />
+        {children}
         <Toaster />
       </body>
     </html>
