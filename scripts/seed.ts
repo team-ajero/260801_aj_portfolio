@@ -7,7 +7,7 @@ import "dotenv/config";
 import { randomUUID } from "node:crypto";
 import { eq } from "drizzle-orm";
 import { hashPassword } from "better-auth/crypto";
-import { db } from "../lib/db";
+import { db } from "../src/lib/db";
 import {
   user,
   account,
@@ -20,7 +20,7 @@ import {
   works,
   faqs,
   reviews,
-} from "../lib/db/schema";
+} from "../src/lib/db/schema";
 
 async function seedAdminUser() {
   const email = process.env.SEED_ADMIN_EMAIL || "admin@example.com";
