@@ -7,24 +7,19 @@ import { Container } from "@/app/components/common/Container";
 import { Card } from "@/app/components/ui/card";
 import { AvatarPlaceholder } from "@/app/components/common/AvatarPlaceholder";
 import Button from "@/app/components/common/Button";
+import { aboutContent, teamMembers, companyHistory } from "@/lib/db/schema";
 
-// 팀 멤버 mock 데이터
-const team = [
-  { id: "01", name: "김도윤", role: "대표 디자이너" },
-  { id: "02", name: "이서연", role: "시공 총괄" },
-  { id: "03", name: "박지훈", role: "설계 디자이너" },
-  { id: "04", name: "최민아", role: "고객 상담" },
-];
+type AboutContent = typeof aboutContent.$inferSelect;
+type TeamMember = typeof teamMembers.$inferSelect;
+type CompanyHistory = typeof companyHistory.$inferSelect;
 
-// 연혁 mock 데이터
-const history = [
-  { year: "2024", event: "누적 시공 500건 돌파" },
-  { year: "2022", event: "상업공간 전담팀 신설" },
-  { year: "2019", event: "서울 강남 스튜디오 오픈" },
-  { year: "2011", event: "회사 설립" },
-];
+interface AboutPageProps {
+  content: AboutContent | null;
+  team: TeamMember[];
+  history: CompanyHistory[];
+}
 
-export default function AboutPage() {
+export default function AboutPage({ content, team, history }: AboutPageProps) {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-100px" });
 
@@ -51,22 +46,23 @@ export default function AboutPage() {
             animate={isInView ? { opacity: 1, x: 0 } : {}}
             transition={{ duration: 0.7, ease: "easeOut" }}
           >
-            <p className="text-sm tracking-widest uppercase text-black/40 mb-4">Our Story</p>
-            <h2 className="text-2xl md:text-3xl lg:text-4xl font-light leading-snug tracking-tight mb-8">
-              공간을 바꾸면<br />일상이 달라집니다
+            <p className="text-sm tracking-widest uppercase text-black/40 mb-4">
+              {content?.eyebrow ?? "Our Story"}
+            </p>
+            <h2 className="text-2xl md:text-3xl lg:text-4xl font-light leading-snug tracking-tight mb-8 whitespace-pre-line">
+              {content?.title ?? "공간을 바꾸면\n일상이 달라집니다"}
             </h2>
             <p className="text-base text-black/50 leading-relaxed mb-6">
-              저희는 단순한 시공을 넘어, 고객의 라이프스타일을 이해하고
-              그에 맞는 공간을 설계합니다. 상담부터 준공 후 사후관리까지
-              전 과정을 직접 책임지며, 신뢰할 수 있는 파트너가 되고자 합니다.
+              {content?.body ??
+                "저희는 단순한 시공을 넘어, 고객의 라이프스타일을 이해하고 그에 맞는 공간을 설계합니다. 상담부터 준공 후 사후관리까지 전 과정을 직접 책임지며, 신뢰할 수 있는 파트너가 되고자 합니다."}
             </p>
 
             <div className="flex gap-12 mt-12">
-              {[
+              {(content?.stats ?? [
                 { number: "500+", label: "완료 프로젝트" },
                 { number: "15Y", label: "시공 경력" },
                 { number: "98%", label: "고객 만족도" },
-              ].map((stat) => (
+              ]).map((stat) => (
                 <div key={stat.label}>
                   <p className="text-2xl md:text-3xl font-light mb-1">{stat.number}</p>
                   <p className="text-xs tracking-widest uppercase text-black/40">{stat.label}</p>
@@ -84,7 +80,7 @@ export default function AboutPage() {
           >
             <div className="relative w-full aspect-[4/5] overflow-hidden bg-black/5">
               <Image
-                src="/images/about/story.jpg"
+                src={content?.imageUrl ?? "/images/about/story.jpg"}
                 alt="회사 소개 이미지"
                 fill
                 className="object-cover"
@@ -115,11 +111,15 @@ export default function AboutPage() {
                 transition={{ duration: 0.5, delay: index * 0.1 }}
               >
                 <Card className="rounded-none border-none shadow-none bg-white p-10 gap-0 h-full">
-                  {/* 프로필 사진 자리 (실제 팀원 사진 확보 시 Image로 교체) */}
-                  <div className="w-full aspect-square bg-black/5 mb-6 overflow-hidden">
-                    <AvatarPlaceholder />
+                  {/* 프로필 사진 (없으면 플레이스홀더) */}
+                  <div className="relative w-full aspect-square bg-black/5 mb-6 overflow-hidden">
+                    {member.imageUrl ? (
+                      <Image src={member.imageUrl} alt={member.name} fill className="object-cover" />
+                    ) : (
+                      <AvatarPlaceholder />
+                    )}
                   </div>
-                  <p className="text-xs text-black/30 mb-2">{member.id}</p>
+                  <p className="text-xs text-black/30 mb-2">{String(index + 1).padStart(2, "0")}</p>
                   <h3 className="text-lg font-light mb-1">{member.name}</h3>
                   <p className="text-sm text-black/50">{member.role}</p>
                 </Card>
@@ -143,7 +143,7 @@ export default function AboutPage() {
           <div className="flex flex-col divide-y divide-black/10">
             {history.map((item, index) => (
               <motion.div
-                key={item.year}
+                key={item.id}
                 className="flex gap-12 py-8"
                 initial={{ opacity: 0, y: 20 }}
                 animate={isInView ? { opacity: 1, y: 0 } : {}}

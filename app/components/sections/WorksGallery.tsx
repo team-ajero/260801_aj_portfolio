@@ -6,21 +6,14 @@ import Image from "next/image";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/app/components/ui/tabs";
 import { Card } from "@/app/components/ui/card";
 import { Badge } from "@/app/components/ui/badge";
+import { works as worksTable } from "@/lib/db/schema";
+
+type Work = typeof worksTable.$inferSelect;
 
 // 카테고리 필터 목록
 const categories = ["전체", "아파트", "주택", "상업공간"];
 
-// 시공사례 mock 데이터
-const works = [
-  { id: 1, title: "강남 아파트", category: "아파트", area: "84㎡", year: "2024", image: "/images/works/gangnam-apt.jpg" },
-  { id: 2, title: "성수 오피스", category: "상업공간", area: "120㎡", year: "2024", image: "/images/works/seongsu-office.jpg" },
-  { id: 3, title: "마포 주택", category: "주택", area: "65㎡", year: "2023", image: "/images/works/mapo-house.jpg" },
-  { id: 4, title: "서초 아파트", category: "아파트", area: "115㎡", year: "2023", image: "/images/works/seocho-apt.jpg" },
-  { id: 5, title: "홍대 카페", category: "상업공간", area: "45㎡", year: "2023", image: "/images/works/hongdae-cafe.jpg" },
-  { id: 6, title: "용산 주택", category: "주택", area: "90㎡", year: "2022", image: "/images/works/yongsan-house.jpg" },
-];
-
-export default function WorksGallery() {
+export default function WorksGallery({ works }: { works: Work[] }) {
   // 선택된 카테고리 상태 (기본값: 전체)
   const [activeCategory, setActiveCategory] = useState("전체");
 
@@ -70,7 +63,7 @@ export default function WorksGallery() {
                 <Card className="rounded-none border-none shadow-none bg-white p-10 gap-0 hover:bg-black/5 transition-colors duration-300 cursor-pointer">
                   <div className="relative w-full aspect-video mb-6 overflow-hidden bg-black/5">
                     <Image
-                      src={work.image}
+                      src={work.imageUrl}
                       alt={work.title}
                       fill
                       className="object-cover"

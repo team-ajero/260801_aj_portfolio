@@ -5,49 +5,26 @@ import { useRef, useState } from "react";
 import Image from "next/image";
 import { Container } from "@/app/components/common/Container";
 import Button from "@/app/components/common/Button";
+import { services as servicesTable } from "@/lib/db/schema";
 
-// 서비스 상세 mock 데이터
-const services = [
-  {
-    id: "01",
-    title: "아파트 인테리어",
-    description: "거주자의 라이프스타일에 맞춘 아파트 전체 리모델링. 공간 효율과 심미성을 동시에 잡습니다.",
-    details: ["설계 및 3D 렌더링", "전체 철거 및 시공", "자재 및 가구 선정", "1년 무상 AS"],
-    price: "평당 150만원~",
-    image: "/images/services/apartment.jpg",
-  },
-  {
-    id: "02",
-    title: "상업공간 설계",
-    description: "카페, 레스토랑, 사무실 등 브랜드 아이덴티티를 공간으로 구현합니다.",
-    details: ["브랜드 컨셉 설계", "인허가 대행", "시공 전 과정 관리", "준공 후 사후관리"],
-    price: "평당 200만원~",
-    image: "/images/services/commercial.jpg",
-  },
-  {
-    id: "03",
-    title: "부분 시공",
-    description: "주방, 욕실, 바닥 등 원하는 공간만 선택적으로 리뉴얼합니다.",
-    details: ["주방 리모델링", "욕실 리모델링", "바닥재 교체", "도배 및 페인트"],
-    price: "공간별 별도 견적",
-    image: "/images/services/partial.jpg",
-  },
-  {
-    id: "04",
-    title: "3D 설계 상담",
-    description: "시공 전 3D 렌더링으로 완성된 공간을 미리 확인할 수 있습니다.",
-    details: ["현장 실측", "3D 렌더링 제공", "자재 샘플 제안", "무제한 수정"],
-    price: "무료 (시공 계약 시)",
-    image: "/images/services/consulting.jpg",
-  },
-];
+type Service = typeof servicesTable.$inferSelect;
 
-export default function ServicesPage() {
+export default function ServicesPage({ services }: { services: Service[] }) {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-100px" });
-  const [activeId, setActiveId] = useState(services[0].id);
+  const [activeId, setActiveId] = useState(services[0]?.id);
 
   const activeService = services.find((s) => s.id === activeId) ?? services[0];
+
+  if (!activeService) {
+    return (
+      <section className="pt-28 md:pt-40 pb-20 md:pb-32">
+        <Container>
+          <p className="text-black/40">등록된 서비스가 없어요.</p>
+        </Container>
+      </section>
+    );
+  }
 
   return (
     <section ref={ref} className="pt-28 md:pt-40 pb-20 md:pb-32">
@@ -81,7 +58,7 @@ export default function ServicesPage() {
                 {/* 모바일 전용 이미지 (호버가 없어서 각자 자기 사진을 인라인으로) */}
                 <div className="md:hidden relative w-full aspect-[4/3] mb-8 overflow-hidden bg-black/5">
                   <Image
-                    src={service.image}
+                    src={service.imageUrl}
                     alt={service.title}
                     fill
                     className="object-cover"
@@ -89,7 +66,7 @@ export default function ServicesPage() {
                   />
                 </div>
 
-                <p className="text-sm text-black/30 mb-4">{service.id}</p>
+                <p className="text-sm text-black/30 mb-4">{String(index + 1).padStart(2, "0")}</p>
                 <h2 className="text-xl md:text-2xl font-light mb-4">{service.title}</h2>
                 <p className="text-sm text-black/50 leading-relaxed mb-6">{service.description}</p>
                 <p className="text-sm font-medium mb-8">{service.price}</p>
@@ -122,7 +99,7 @@ export default function ServicesPage() {
                   className="absolute inset-0"
                 >
                   <Image
-                    src={activeService.image}
+                    src={activeService.imageUrl}
                     alt={activeService.title}
                     fill
                     className="object-cover"
@@ -136,7 +113,9 @@ export default function ServicesPage() {
 
               {/* 현재 보고 있는 서비스 라벨 */}
               <div className="absolute bottom-6 left-6 text-white">
-                <p className="text-xs tracking-widest uppercase opacity-70 mb-1">{activeService.id}</p>
+                <p className="text-xs tracking-widest uppercase opacity-70 mb-1">
+                  {String(services.findIndex((s) => s.id === activeService.id) + 1).padStart(2, "0")}
+                </p>
                 <p className="text-lg font-light">{activeService.title}</p>
               </div>
             </div>

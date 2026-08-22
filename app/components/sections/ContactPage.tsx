@@ -1,8 +1,9 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { useState } from "react";
+import { useState, useTransition } from "react";
 import { toast } from "sonner";
+import { submitInquiry } from "@/lib/actions/inquiries";
 import Button from "@/app/components/common/Button";
 import { Input } from "@/app/components/ui/input";
 import { Textarea } from "@/app/components/ui/textarea";
@@ -49,15 +50,23 @@ export default function ContactPage() {
     setFormData((prev) => ({ ...prev, type: value }));
   };
 
-  // 폼 제출 (API 연동 전까지는 toast로 성공 피드백만 처리)
+  const [isPending, startTransition] = useTransition();
+
   const handleSubmit = () => {
     if (!formData.name || !formData.phone) {
       toast.error("이름과 연락처는 필수 입력 항목이에요.");
       return;
     }
-    console.log("제출된 데이터:", formData);
-    toast.success("문의가 접수됐어요. 빠르게 연락드릴게요.");
-    setFormData({ name: "", phone: "", email: "", type: "", area: "", message: "" });
+
+    startTransition(async () => {
+      try {
+        await submitInquiry(formData);
+        toast.success("문의가 접수됐어요. 빠르게 연락드릴게요.");
+        setFormData({ name: "", phone: "", email: "", type: "", area: "", message: "" });
+      } catch (err) {
+        toast.error(err instanceof Error ? err.message : "제출에 실패했어요.");
+      }
+    });
   };
 
   return (
@@ -185,7 +194,7 @@ export default function ContactPage() {
 
           {/* 제출 버튼 */}
           <div className="flex justify-end">
-            <Button label="문의 보내기" onClick={handleSubmit} variant="primary" />
+            <Button label="문의 보내기" onClick={handleSubmit} variant="primary" disabled={isPending} />
           </div>
         </motion.div>
       </div>

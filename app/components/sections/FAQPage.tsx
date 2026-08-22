@@ -11,51 +11,14 @@ import {
 } from "@/app/components/ui/accordion";
 import { Container } from "@/app/components/common/Container";
 import Button from "@/app/components/common/Button";
+import { faqs as faqsTable } from "@/lib/db/schema";
+
+type Faq = typeof faqsTable.$inferSelect;
 
 // 카테고리 필터 목록
 const categories = ["전체", "견적/비용", "시공기간", "진행절차", "AS/보증"];
 
-// FAQ mock 데이터
-const faqs = [
-  {
-    id: "01",
-    category: "견적/비용",
-    question: "견적은 어떻게 산정되나요?",
-    answer: "평수, 시공 범위, 자재 등급에 따라 산정돼요. 현장 실측 후 3D 렌더링과 함께 상세 견적서를 무료로 제공해드립니다.",
-  },
-  {
-    id: "02",
-    category: "견적/비용",
-    question: "계약금은 얼마인가요?",
-    answer: "총 공사비의 30%를 계약금으로, 중도금 40%, 잔금 30%로 나누어 진행하는 것이 기본이며 상황에 따라 조정 가능합니다.",
-  },
-  {
-    id: "03",
-    category: "시공기간",
-    question: "시공 기간은 얼마나 걸리나요?",
-    answer: "84㎡ 아파트 전체 리모델링 기준 평균 4~6주가 소요돼요. 부분 시공은 범위에 따라 1~2주 내외입니다.",
-  },
-  {
-    id: "04",
-    category: "진행절차",
-    question: "상담부터 시공까지 절차가 어떻게 되나요?",
-    answer: "상담 및 현장 방문 → 설계 및 견적 → 계약 및 자재 선정 → 시공 → 준공 및 사후관리 순으로 진행돼요. 각 단계마다 담당자가 배정되어 소통합니다.",
-  },
-  {
-    id: "05",
-    category: "진행절차",
-    question: "자재는 직접 고를 수 있나요?",
-    answer: "네, 계약 후 자재 선정 단계에서 다양한 샘플과 옵션을 제안해드리고 고객님이 직접 선택하실 수 있어요.",
-  },
-  {
-    id: "06",
-    category: "AS/보증",
-    question: "시공 후 하자보수는 어떻게 되나요?",
-    answer: "준공 후 1년간 무상 AS를 제공하며, 하자 발생 시 접수 후 빠르게 방문해 조치해드립니다.",
-  },
-];
-
-export default function FAQPage() {
+export default function FAQPage({ faqs }: { faqs: Faq[] }) {
   const [activeCategory, setActiveCategory] = useState("전체");
 
   const filtered = activeCategory === "전체"
@@ -99,7 +62,7 @@ export default function FAQPage() {
             >
               <Accordion type="single" collapsible className="flex flex-col">
                 {filtered.map((faq) => (
-                  <AccordionItem key={faq.id} value={faq.id} className="border-black/10">
+                  <AccordionItem key={faq.id} value={String(faq.id)} className="border-black/10">
                     <AccordionTrigger className="py-6 text-base md:text-lg font-light hover:no-underline [&>svg]:text-black/40">
                       {faq.question}
                     </AccordionTrigger>

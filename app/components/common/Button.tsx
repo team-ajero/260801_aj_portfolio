@@ -10,6 +10,7 @@ interface ButtonProps {
   variant?: "primary" | "secondary";
   type?: "button" | "submit";
   className?: string;
+  disabled?: boolean;
 }
 
 // primary/secondary → shadcn Button 기본 variant로 매핑
@@ -25,6 +26,7 @@ export default function Button({
   variant = "primary",
   type = "button",
   className,
+  disabled,
 }: ButtonProps) {
   const shadcnVariant = variantMap[variant];
 
@@ -37,7 +39,7 @@ export default function Button({
   }
 
   return (
-    <ShadcnButton type={type} onClick={onClick} variant={shadcnVariant} className={className}>
+    <ShadcnButton type={type} onClick={onClick} variant={shadcnVariant} className={className} disabled={disabled}>
       {label}
     </ShadcnButton>
   );

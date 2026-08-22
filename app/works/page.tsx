@@ -1,9 +1,12 @@
 import WorksGallery from "@/app/components/sections/WorksGallery";
+import { getWorks } from "@/lib/actions/works";
 
-export default function WorksPage() {
+export default async function WorksPage() {
+    const works = await getWorks();
+
     return (
         <div>
-            <WorksGallery />
+            <WorksGallery works={works} />
         </div>
     );
 }
