@@ -5,15 +5,11 @@ import { useRef, useState } from "react";
 import Image from "next/image";
 import Button from "@/app/components/common/Button";
 import { Container } from "@/app/components/common/Container";
+import { works as worksTable } from "@/lib/db/schema";
 
-// 이미지는 WorksGallery(/works)와 동일한 mock 파일 재사용
-const works = [
-    { id: 1, title: "강남 아파트", category: "아파트", area: "84㎡", year: "2024", image: "/images/works/gangnam-apt.jpg" },
-    { id: 2, title: "성수 오피스", category: "상업공간", area: "120㎡", year: "2024", image: "/images/works/seongsu-office.jpg" },
-    { id: 3, title: "마포 주택", category: "주택", area: "65㎡", year: "2023", image: "/images/works/mapo-house.jpg" },
-];
+type Work = typeof worksTable.$inferSelect;
 
-export default function WorksSection() {
+export default function WorksSection({ works }: { works: Work[] }) {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-100px" });
 
@@ -68,7 +64,7 @@ export default function WorksSection() {
             >
               {/* 프로젝트 번호 + 제목 */}
               <div className="flex items-center gap-8">
-                <span className="text-sm text-black/30">0{work.id}</span>
+                <span className="text-sm text-black/30">0{index + 1}</span>
                 <h3 className="text-xl font-light group-hover:opacity-50 transition-opacity duration-300">
                   {work.title}
                 </h3>
@@ -95,7 +91,7 @@ export default function WorksSection() {
                 transition={{ duration: 0.3, ease: "easeOut" }}
               >
                 <Image
-                  src={hoveredWork.image}
+                  src={hoveredWork.imageUrl}
                   alt={hoveredWork.title}
                   fill
                   className="object-cover"

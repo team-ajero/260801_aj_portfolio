@@ -7,17 +7,30 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import Button from "@/app/components/common/Button";
 import { Container } from "@/app/components/common/Container";
 
-// 롤링 배너 슬라이드 (5초마다 자동 전환). focus는 사진마다 핵심 피사체 위치가 달라서 개별 지정
-const slides = [
-  { id: 1, image: "/images/hero/hero-bg.jpg", focus: "center 35%" },
-  { id: 2, image: "/images/hero/hero-bg-2.jpg", focus: "center 45%" },
-  { id: 3, image: "/images/hero/hero-bg-3.jpg", focus: "center 50%" },
-];
-
 const AUTO_ROTATE_MS = 5000;
 
-export default function HeroSection() {
-  const headline = ["공간이", "말하는", "당신의", "이야기"];
+export interface HeroSectionProps {
+  slides: { id: number; image: string; focus: string }[];
+  eyebrow: string;
+  headline: string;
+  description: string;
+  primaryCtaLabel: string;
+  primaryCtaHref: string;
+  secondaryCtaLabel: string;
+  secondaryCtaHref: string;
+}
+
+export default function HeroSection({
+  slides,
+  eyebrow,
+  headline,
+  description,
+  primaryCtaLabel,
+  primaryCtaHref,
+  secondaryCtaLabel,
+  secondaryCtaHref,
+}: HeroSectionProps) {
+  const headlineWords = headline.split(" ");
   const wordVariants: Variants = {
     hidden: { opacity: 0, y: 60, skewY: 3 },
     visible: {
@@ -49,6 +62,19 @@ export default function HeroSection() {
     }, AUTO_ROTATE_MS);
     return () => clearInterval(timer);
   }, []);
+
+  // 관리자에서 슬라이드를 모두 지운 직후처럼 빈 배열이 들어올 수 있으니 방어
+  if (slides.length === 0) {
+    return (
+      <section className="relative min-h-screen flex flex-col justify-center pt-24 bg-black">
+        <Container>
+          <p className="text-white/60 text-sm">
+            관리자 &gt; 메인 페이지에서 배경 이미지를 등록해주세요.
+          </p>
+        </Container>
+      </section>
+    );
+  }
 
   return (
     // min-h-screen: 화면 전체 높이 / 수직 중앙 정렬
@@ -119,7 +145,7 @@ export default function HeroSection() {
           animate={{ opacity: 1 }}    // 끝: 불투명
           transition={{ duration: 1, delay: 0.2 }}
         >
-          Interior Design Studio
+          {eyebrow}
         </motion.p>
 
         <motion.h1
@@ -128,8 +154,8 @@ export default function HeroSection() {
           initial="hidden"
           animate="visible"
         >
-          {headline.map((word) => (
-            <span key={word} className="overflow-hidden">
+          {headlineWords.map((word, i) => (
+            <span key={`${word}-${i}`} className="overflow-hidden">
               <motion.span className="inline-block" variants={wordVariants}>
                 {word}
               </motion.span>
@@ -138,13 +164,12 @@ export default function HeroSection() {
         </motion.h1>
 
         <motion.p
-          className="text-base text-white/70 max-w-md mb-12 leading-relaxed"
+          className="text-base text-white/70 max-w-md mb-12 leading-relaxed whitespace-pre-line"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, delay: 0.8 }}
         >
-          15년의 시공 경험으로 완성된 공간,<br />
-          고객의 라이프스타일에 맞는 인테리어를 제안합니다.
+          {description}
         </motion.p>
 
         <motion.div
@@ -153,10 +178,10 @@ export default function HeroSection() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, delay: 1 }}
         >
-          <Button label="시공사례 보기" href="/works" variant="primary" />
+          <Button label={primaryCtaLabel} href={primaryCtaHref} variant="primary" />
           <Button
-            label="견적 문의"
-            href="/contact"
+            label={secondaryCtaLabel}
+            href={secondaryCtaHref}
             variant="secondary"
             className="bg-transparent border-white text-white hover:bg-white hover:text-black"
           />
