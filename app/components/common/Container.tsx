@@ -7,5 +7,5 @@ export function Container({
   children: React.ReactNode;
   className?: string;
 }) {
-  return <div className={cn("px-24", className)}>{children}</div>;
+  return <div className={cn("px-6 md:px-12 lg:px-24", className)}>{children}</div>;
 }

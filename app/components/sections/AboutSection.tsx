@@ -11,7 +11,7 @@ export default function AboutSection() {
   const isInView = useInView(ref, { once: true, margin: "-100px" });
 
   return (
-    <section ref={ref} className="py-32">
+    <section ref={ref} className="py-20 md:py-32">
       <Container className="flex flex-col md:flex-row gap-20">
 
         <motion.div
@@ -31,7 +31,7 @@ export default function AboutSection() {
           animate={isInView ? { opacity: 1, x: 0 } : {}}
           transition={{ duration: 0.7, ease: "easeOut", delay: 0.2 }}
         >
-          <h2 className="text-4xl font-light leading-snug tracking-tight mb-8">
+          <h2 className="text-2xl md:text-3xl lg:text-4xl font-light leading-snug tracking-tight mb-8">
             공간을 바꾸면<br />일상이 달라집니다
           </h2>
           <p className="text-base text-black/50 leading-relaxed mb-6">
@@ -47,7 +47,7 @@ export default function AboutSection() {
               { number: "98%", label: "고객 만족도" },
             ].map((stat) => (
               <div key={stat.label}>
-                <p className="text-3xl font-light mb-1">{stat.number}</p>
+                <p className="text-2xl md:text-3xl font-light mb-1">{stat.number}</p>
                 <p className="text-xs tracking-widest uppercase text-black/40">{stat.label}</p>
               </div>
             ))}

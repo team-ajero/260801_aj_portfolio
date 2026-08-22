@@ -38,7 +38,7 @@ export default function ProcessSection() {
   const isInView = useInView(ref, { once: true, margin: "-100px" });
 
   return (
-    <section ref={ref} className="py-32">
+    <section ref={ref} className="py-20 md:py-32">
       <Container>
 
         {/* 섹션 헤더 */}
@@ -49,7 +49,7 @@ export default function ProcessSection() {
           transition={{ duration: 0.7, ease: "easeOut" }}
         >
           <p className="text-sm tracking-widest uppercase text-black/40 mb-4">Process</p>
-          <h2 className="text-4xl font-light tracking-tight">시공 프로세스</h2>
+          <h2 className="text-2xl md:text-3xl lg:text-4xl font-light tracking-tight">시공 프로세스</h2>
         </motion.div>
 
         {/* 프로세스 단계 목록 */}
