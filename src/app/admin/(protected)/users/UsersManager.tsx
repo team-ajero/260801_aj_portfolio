@@ -42,7 +42,7 @@ import { DeleteConfirmButton } from "@/app/components/admin/DeleteConfirmButton"
 
 type AdminUser = Awaited<ReturnType<typeof listAdminUsers>>[number];
 
-const emptyForm = { name: "", email: "", password: "", role: "user" as "admin" | "user" };
+const emptyForm = { name: "", email: "", password: "", passwordConfirm: "", role: "user" as "admin" | "user" };
 
 export function UsersManager({
   initialUsers,
@@ -61,6 +61,12 @@ export function UsersManager({
       toast.error("이름, 이메일을 입력하고 비밀번호는 8자 이상이어야 해요.");
       return;
     }
+
+    if (form.password !== form.passwordConfirm) {
+      toast.error("비밀번호와 비밀번호 확인이 일치하지 않아요.")
+      return
+    }
+
     startTransition(async () => {
       try {
         await createAdminUser(form);
@@ -135,6 +141,14 @@ export function UsersManager({
                   type="password"
                   value={form.password}
                   onChange={(e) => setForm((f) => ({ ...f, password: e.target.value }))}
+                />
+              </div>
+              <div className="flex flex-col gap-2">
+                <Label>비밀번호 확인</Label>
+                <Input
+                  type="password"
+                  value={form.passwordConfirm}
+                  onChange={(e) => setForm((f) => ({ ...f, passwordConfirm: e.target.value }))}
                 />
               </div>
               <div className="flex flex-col gap-2">
