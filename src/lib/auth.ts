@@ -1,5 +1,6 @@
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
+import { nextCookies } from "better-auth/next-js";
 import { admin } from "better-auth/plugins";
 import { db } from "./db";
 import * as schema from "./db/schema";
@@ -23,6 +24,9 @@ export const auth = betterAuth({
     admin({
       adminRoles: ["admin"],
     }),
+    // 마이페이지(내 정보/비밀번호 수정)처럼 Server Action에서 본인 세션을 갱신하는 API를 쓸 때
+    // better-auth가 내려주는 Set-Cookie를 Next.js 응답에 자동 반영해줌 - 반드시 마지막 플러그인이어야 함.
+    nextCookies(),
   ],
   session: {
     cookieCache: {
