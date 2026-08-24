@@ -178,18 +178,19 @@ export default function HeroSection({
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, delay: 1 }}
         >
-          <Button label={primaryCtaLabel} href={primaryCtaHref} variant="primary" />
+          {/* 두 버튼의 라벨/링크는 유지하고 스타일(variant)만 서로 교체 */}
           <Button
-            label={secondaryCtaLabel}
-            href={secondaryCtaHref}
+            label={primaryCtaLabel}
+            href={primaryCtaHref}
             variant="secondary"
             className="bg-transparent border-white text-white hover:bg-white hover:text-black"
           />
+          <Button label={secondaryCtaLabel} href={secondaryCtaHref} variant="primary" />
         </motion.div>
       </Container>
 
-      {/* 스크롤 안내 (중앙 하단) */}
-      <div className="absolute bottom-10 left-1/2 -translate-x-1/2 z-10 flex flex-col items-center gap-3">
+      {/* 스크롤 안내 (중앙 하단, 모바일에서는 공간이 좁아 숨김) */}
+      <div className="hidden md:flex absolute bottom-10 left-1/2 -translate-x-1/2 z-10 flex-col items-center gap-3">
         <div className="w-px h-10 bg-white/25 relative overflow-hidden">
           <motion.span
             className="absolute left-0 top-0 w-px h-3 bg-white"

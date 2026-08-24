@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import { useState } from "react";
+import Image from "next/image";
 import { Star } from "lucide-react";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/app/components/ui/tabs";
 import { Card } from "@/app/components/ui/card";
@@ -9,6 +10,8 @@ import { Badge } from "@/app/components/ui/badge";
 import { Container } from "@/app/components/common/Container";
 import { reviews as reviewsTable } from "@/lib/db/schema";
 import { ReviewForm } from "./ReviewForm";
+
+const GRID_COLUMNS = 3; // lg:grid-cols-3 기준
 
 type Review = typeof reviewsTable.$inferSelect;
 
@@ -25,6 +28,10 @@ export default function ReviewsPage({ reviews }: { reviews: Review[] }) {
   const average = reviews.length
     ? (reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length).toFixed(1)
     : "-";
+
+  // 마지막 줄이 그리드를 다 채우지 못할 때, 남는 칸(예전엔 회색 배경만 보이던 자리)에 이미지를 채워넣기 위한 개수
+  const remainder = filtered.length % GRID_COLUMNS;
+  const fillerCount = filtered.length > 0 && remainder !== 0 ? GRID_COLUMNS - remainder : 0;
 
   return (
     <section className="pt-28 md:pt-40 pb-20 md:pb-32">
@@ -81,15 +88,16 @@ export default function ReviewsPage({ reviews }: { reviews: Review[] }) {
 
         <TabsContent value={activeCategory} className="mt-16">
           {/* 후기 카드 그리드 */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-px bg-black/10">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filtered.map((review, index) => (
               <motion.div
                 key={review.id}
                 initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: index * 0.05 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-40px" }}
+                transition={{ duration: 0.5, delay: (index % GRID_COLUMNS) * 0.05 }}
               >
-                <Card className="rounded-none border-none shadow-none bg-white p-10 gap-0 h-full">
+                <Card className="rounded-none border border-black/10 shadow-none bg-white p-10 gap-0 h-full">
                   {/* 별점 */}
                   <div className="flex gap-1 mb-6">
                     {Array.from({ length: 5 }).map((_, i) => (
@@ -116,6 +124,26 @@ export default function ReviewsPage({ reviews }: { reviews: Review[] }) {
                     </div>
                   </div>
                 </Card>
+              </motion.div>
+            ))}
+
+            {/* 마지막 줄에 빈 칸이 남으면(예전엔 회색 배경만 보이던 자리) 이미지를 채워 넣음 */}
+            {Array.from({ length: fillerCount }).map((_, i) => (
+              <motion.div
+                key={`filler-${i}`}
+                className="relative w-full h-full min-h-64 overflow-hidden"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-40px" }}
+                transition={{ duration: 0.5, delay: (filtered.length % GRID_COLUMNS) * 0.05 }}
+              >
+                <Image
+                  src="/images/reviews/case-study.jpg"
+                  alt="시공사례"
+                  fill
+                  className="object-cover"
+                  sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                />
               </motion.div>
             ))}
           </div>

@@ -37,7 +37,7 @@ export default function Nav() {
 
   return (
     <motion.header
-      className="fixed top-0 left-0 right-0 z-50 px-6 md:px-10 py-6 flex items-center justify-between"
+      className="fixed top-0 left-0 right-0 z-50 px-6 md:px-[90px] py-6 flex items-center justify-between"
       style={{
         backgroundColor: useTransform(bgOpacity, (v) => `rgba(255,255,255,${v})`),
         borderBottom: "1px solid black",

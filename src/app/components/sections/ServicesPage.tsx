@@ -86,9 +86,9 @@ export default function ServicesPage({ services }: { services: Service[] }) {
             ))}
           </div>
 
-          {/* 오른쪽: 스티키 이미지 (데스크톱 전용, 왼쪽 호버에 따라 전환) */}
-          <div className="hidden md:block md:w-2/5">
-            <div className="sticky top-32 relative aspect-[3/4] overflow-hidden bg-black/5">
+          {/* 오른쪽: 스티키 이미지 (데스크톱 전용, 왼쪽 호버에 따라 전환) - 뷰포트 y축 중앙 정렬 */}
+          <div className="hidden md:flex md:w-2/5 md:items-center">
+            <div className="sticky top-1/2 -translate-y-1/2 relative w-full aspect-[3/4] overflow-hidden bg-black/5">
               <AnimatePresence mode="wait">
                 <motion.div
                   key={activeService.id}
