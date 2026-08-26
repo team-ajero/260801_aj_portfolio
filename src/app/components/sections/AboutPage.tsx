@@ -39,7 +39,7 @@ export default function AboutPage({ content, team, history }: AboutPageProps) {
         </motion.div>
 
         {/* 스토리 + 통계 */}
-        <div className="flex flex-col md:flex-row gap-16 mb-32">
+        <div className="flex flex-col md:flex-row md:items-center gap-16 mb-32">
           <motion.div
             className="md:w-1/2"
             initial={{ opacity: 0, x: -30 }}
@@ -78,7 +78,7 @@ export default function AboutPage({ content, team, history }: AboutPageProps) {
             animate={isInView ? { opacity: 1, x: 0 } : {}}
             transition={{ duration: 0.7, ease: "easeOut", delay: 0.2 }}
           >
-            <div className="relative w-full aspect-[4/5] overflow-hidden bg-black/5">
+            <div className="relative w-full aspect-[8/9] overflow-hidden bg-black/5">
               <Image
                 src={content?.imageUrl ?? "/images/about/story.jpg"}
                 alt="회사 소개 이미지"

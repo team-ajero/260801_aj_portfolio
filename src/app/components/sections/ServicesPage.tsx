@@ -50,7 +50,7 @@ export default function ServicesPage({ services }: { services: Service[] }) {
                 key={service.id}
                 className="py-12 md:py-16"
                 onViewportEnter={() => setActiveId(service.id)}
-                viewport={{ margin: "-45% 0px -45% 0px" }}
+                viewport={{ margin: "-35% 0px -35% 0px" }}
                 initial={{ opacity: 0, y: 20 }}
                 animate={isInView ? { opacity: 1, y: 0 } : {}}
                 transition={{ duration: 0.5, delay: index * 0.1 }}
@@ -86,16 +86,16 @@ export default function ServicesPage({ services }: { services: Service[] }) {
             ))}
           </div>
 
-          {/* 오른쪽: 스티키 이미지 (데스크톱 전용, 왼쪽 호버에 따라 전환) */}
-          <div className="hidden md:block md:w-2/5">
-            <div className="sticky top-32 relative aspect-[3/4] overflow-hidden bg-black/5">
-              <AnimatePresence mode="wait">
+          {/* 오른쪽: 스티키 이미지 (데스크톱 전용, 왼쪽 호버에 따라 전환) - 뷰포트 y축 중앙 정렬 */}
+          <div className="hidden md:flex md:w-2/5 md:items-center">
+            <div className="sticky top-1/2 -translate-y-1/2 relative w-full aspect-[3/4] overflow-hidden bg-black/5">
+              <AnimatePresence>
                 <motion.div
                   key={activeService.id}
                   initial={{ opacity: 0, scale: 1.04 }}
                   animate={{ opacity: 1, scale: 1 }}
                   exit={{ opacity: 0 }}
-                  transition={{ duration: 0.5, ease: "easeOut" }}
+                  transition={{ duration: 0.35, ease: "easeOut" }}
                   className="absolute inset-0"
                 >
                   <Image

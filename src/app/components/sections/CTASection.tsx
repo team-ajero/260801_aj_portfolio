@@ -10,7 +10,7 @@ export default function CTASection() {
   const isInView = useInView(ref, { once: true, margin: "-100px" });
 
   return (
-    <section ref={ref} className="py-24 md:py-32 lg:py-40 flex flex flex-col items-center text-center">
+    <section ref={ref} className="py-24 md:py-32 lg:py-40 flex flex flex-col items-center text-center bg-slate-50">
       <Container className="max-w-2xl mx-auto">
 
         {/* 섹션 라벨 */}

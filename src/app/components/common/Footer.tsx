@@ -2,7 +2,7 @@ import Link from "next/link";
 
 export default function Footer() {
   return (
-    <footer className="px-6 md:px-12 lg:px-24 py-8 flex flex-col md:flex-row items-center justify-between gap-6 md:gap-8 text-sm text-black/40">
+    <footer className="px-6 md:px-[90px] py-8 flex flex-col md:flex-row items-center justify-between gap-6 md:gap-8 text-sm text-black/40">
       <p className="text-center md:text-left">© {new Date().getFullYear()} Interior Studio. All rights reserved.</p>
 
       <ul className="flex flex-wrap justify-center gap-x-6 gap-y-2 md:gap-8">
