@@ -128,7 +128,9 @@ export default function ContactPage() {
           {/* 이름 + 연락처 */}
           <div className="flex flex-col sm:flex-row gap-6">
             <div className="w-full sm:w-1/2 flex flex-col gap-2">
-              <Label htmlFor="name" className="text-xs tracking-widest uppercase text-black/40">이름</Label>
+              <Label htmlFor="name" className="text-xs tracking-widest uppercase text-black/40">
+                <span className="text-red-500">*</span> 이름
+              </Label>
               <Input
                 id="name"
                 name="name"
@@ -138,7 +140,9 @@ export default function ContactPage() {
               />
             </div>
             <div className="w-full sm:w-1/2 flex flex-col gap-2">
-              <Label htmlFor="phone" className="text-xs tracking-widest uppercase text-black/40">연락처</Label>
+              <Label htmlFor="phone" className="text-xs tracking-widest uppercase text-black/40">
+                <span className="text-red-500">*</span> 연락처
+              </Label>
               <Input
                 id="phone"
                 name="phone"
@@ -165,7 +169,9 @@ export default function ContactPage() {
           {/* 시공 종류 + 평수 */}
           <div className="flex flex-col sm:flex-row gap-6">
             <div className="w-full sm:w-1/2 flex flex-col gap-2">
-              <Label htmlFor="type" className="text-xs tracking-widest uppercase text-black/40">시공 종류</Label>
+              <Label htmlFor="type" className="text-xs tracking-widest uppercase text-black/40">
+                <span className="text-red-500">*</span> 시공 종류
+              </Label>
               <Select value={formData.type} onValueChange={handleSelectChange}>
                 <SelectTrigger id="type" className="w-full">
                   <SelectValue placeholder="시공 종류 선택" />
@@ -179,7 +185,9 @@ export default function ContactPage() {
               </Select>
             </div>
             <div className="w-full sm:w-1/2 flex flex-col gap-2">
-              <Label htmlFor="area" className="text-xs tracking-widest uppercase text-black/40">평수</Label>
+              <Label htmlFor="area" className="text-xs tracking-widest uppercase text-black/40">
+                <span className="text-red-500">*</span> 평수
+              </Label>
               <Input
                 id="area"
                 name="area"

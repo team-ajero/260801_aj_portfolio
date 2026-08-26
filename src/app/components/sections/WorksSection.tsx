@@ -1,10 +1,12 @@
 "use client"
 
-import { motion, useInView, useMotionValue, useSpring, AnimatePresence } from "framer-motion";
-import { useRef, useState } from "react";
+import { motion, useInView } from "framer-motion";
+import { useRef } from "react";
 import Image from "next/image";
 import Button from "@/app/components/common/Button";
 import { Container } from "@/app/components/common/Container";
+import { Card } from "@/app/components/ui/card";
+import { Badge } from "@/app/components/ui/badge";
 import { works as worksTable } from "@/lib/db/schema";
 
 type Work = typeof worksTable.$inferSelect;
@@ -12,22 +14,6 @@ type Work = typeof worksTable.$inferSelect;
 export default function WorksSection({ works }: { works: Work[] }) {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-100px" });
-
-  // 현재 마우스를 올리고 있는 항목 (플로팅 미리보기 표시용)
-  const [hoveredId, setHoveredId] = useState<number | null>(null);
-  const hoveredWork = works.find((w) => w.id === hoveredId);
-
-  // 마우스 위치를 부드럽게(스프링) 따라가는 플로팅 박스 좌표
-  const mouseX = useMotionValue(0);
-  const mouseY = useMotionValue(0);
-  const springX = useSpring(mouseX, { stiffness: 300, damping: 30 });
-  const springY = useSpring(mouseY, { stiffness: 300, damping: 30 });
-
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    const rect = e.currentTarget.getBoundingClientRect();
-    mouseX.set(e.clientX - rect.left);
-    mouseY.set(e.clientY - rect.top);
-  };
 
   return (
     <section ref={ref} className="py-20 md:py-32">
@@ -47,59 +33,48 @@ export default function WorksSection({ works }: { works: Work[] }) {
           <Button label="전체 보기" href="/works" variant="secondary" />
         </motion.div>
 
-        {/* 시공사례 카드 목록 */}
-        <div
-          className="relative flex flex-col divide-y divide-black/10"
-          onMouseMove={handleMouseMove}
-        >
+        {/* 시공사례 카드 그리드 */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {works.map((work, index) => (
             <motion.div
               key={work.id}
-              className="flex items-center justify-between py-8 group cursor-pointer"
-              onMouseEnter={() => setHoveredId(work.id)}
-              onMouseLeave={() => setHoveredId(null)}
               initial={{ opacity: 0, y: 20 }}
               animate={isInView ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.5, delay: index * 0.1 }}
             >
-              {/* 프로젝트 번호 + 제목 */}
-              <div className="flex items-center gap-8">
-                <span className="text-sm text-black/30">0{index + 1}</span>
-                <h3 className="text-xl font-light group-hover:opacity-50 transition-opacity duration-300">
-                  {work.title}
-                </h3>
-              </div>
+              <Card className="group rounded-none border border-black/10 shadow-none bg-white p-0 gap-0 overflow-hidden cursor-pointer">
+                {/* 프로젝트 이미지 (4:5 세로 비율) */}
+                <div className="relative w-full aspect-[4/5] overflow-hidden bg-black/5">
+                  <Image
+                    src={work.imageUrl}
+                    alt={work.title}
+                    fill
+                    className="object-cover transition-transform duration-500 group-hover:scale-105"
+                    sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                  />
+                </div>
 
-              {/* 프로젝트 정보 */}
-              <div className="flex gap-12 text-sm text-black/40">
-                <span>{work.category}</span>
-                <span>{work.area}</span>
-                <span>{work.year}</span>
-              </div>
+                {/* 제목 + 메타 정보 */}
+                <div className="p-6">
+                  <Badge
+                    variant="outline"
+                    className="text-black/40 border-black/20 rounded-none px-0 border-0 text-xs tracking-widest uppercase mb-2"
+                  >
+                    {work.category}
+                  </Badge>
+                  <h3 className="text-lg font-light mb-4">{work.title}</h3>
+                  <div className="flex gap-2">
+                    <Badge variant="secondary" className="rounded-none text-xs text-black/40 bg-black/5">
+                      {work.area}
+                    </Badge>
+                    <Badge variant="secondary" className="rounded-none text-xs text-black/40 bg-black/5">
+                      {work.year}
+                    </Badge>
+                  </div>
+                </div>
+              </Card>
             </motion.div>
           ))}
-
-          {/* 마우스를 따라다니는 플로팅 이미지 미리보기 (데스크톱 전용, 호버 없는 터치기기는 자동 비활성) */}
-          <AnimatePresence>
-            {hoveredWork && (
-              <motion.div
-                className="hidden md:block absolute top-0 left-0 z-10 w-64 h-80 -ml-32 -mt-40 pointer-events-none overflow-hidden bg-black/5"
-                style={{ x: springX, y: springY }}
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.9 }}
-                transition={{ duration: 0.3, ease: "easeOut" }}
-              >
-                <Image
-                  src={hoveredWork.imageUrl}
-                  alt={hoveredWork.title}
-                  fill
-                  className="object-cover"
-                  sizes="256px"
-                />
-              </motion.div>
-            )}
-          </AnimatePresence>
         </div>
       </Container>
     </section>

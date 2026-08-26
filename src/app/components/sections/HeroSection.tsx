@@ -178,14 +178,14 @@ export default function HeroSection({
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, delay: 1 }}
         >
-          {/* 두 버튼의 라벨/링크는 유지하고 스타일(variant)만 서로 교체 */}
+          {/* 시공사례 보기: 검정 채움 / 견적 문의: 흰색 채움 */}
+          <Button label={primaryCtaLabel} href={primaryCtaHref} variant="primary" />
           <Button
-            label={primaryCtaLabel}
-            href={primaryCtaHref}
+            label={secondaryCtaLabel}
+            href={secondaryCtaHref}
             variant="secondary"
-            className="bg-transparent border-white text-white hover:bg-white hover:text-black"
+            className="bg-white border-white text-black hover:bg-white/90"
           />
-          <Button label={secondaryCtaLabel} href={secondaryCtaHref} variant="primary" />
         </motion.div>
       </Container>
 

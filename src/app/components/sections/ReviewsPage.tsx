@@ -4,34 +4,62 @@ import { motion } from "framer-motion";
 import { useState } from "react";
 import Image from "next/image";
 import { Star } from "lucide-react";
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/app/components/ui/tabs";
-import { Card } from "@/app/components/ui/card";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/app/components/ui/select";
 import { Badge } from "@/app/components/ui/badge";
 import { Container } from "@/app/components/common/Container";
+import { AvatarPlaceholder } from "@/app/components/common/AvatarPlaceholder";
 import { reviews as reviewsTable } from "@/lib/db/schema";
 import { ReviewForm } from "./ReviewForm";
-
-const GRID_COLUMNS = 3; // lg:grid-cols-3 기준
 
 type Review = typeof reviewsTable.$inferSelect;
 
 // 카테고리 필터 목록
 const categories = ["전체", "아파트", "주택", "상업공간"];
 
+// 정렬 옵션
+const sortOptions = [
+  { value: "latest", label: "최신순" },
+  { value: "rating-desc", label: "별점 높은순" },
+  { value: "rating-asc", label: "별점 낮은순" },
+] as const;
+type SortValue = (typeof sortOptions)[number]["value"];
+
+// TODO: 리뷰 테이블에 imageUrl 필드가 생기기 전까지, public/images/works의 기존 시공사례
+// 사진을 카테고리에 맞춰 임시로 붙여서 보여주기 위한 매핑
+const CATEGORY_IMAGES: Record<string, string[]> = {
+  아파트: ["/images/works/gangnam-apt.jpg", "/images/works/seocho-apt.jpg"],
+  주택: ["/images/works/mapo-house.jpg", "/images/works/yongsan-house.jpg"],
+  상업공간: ["/images/works/hongdae-cafe.jpg", "/images/works/seongsu-office.jpg"],
+};
+
+function getReviewImage(review: Review, index: number) {
+  const pool = CATEGORY_IMAGES[review.category] ?? ["/images/reviews/case-study.jpg"];
+  return pool[index % pool.length];
+}
+
 export default function ReviewsPage({ reviews }: { reviews: Review[] }) {
   const [activeCategory, setActiveCategory] = useState("전체");
+  const [sortBy, setSortBy] = useState<SortValue>("latest");
 
   const filtered = activeCategory === "전체"
     ? reviews
     : reviews.filter((r) => r.category === activeCategory);
 
+  const sorted = [...filtered].sort((a, b) => {
+    if (sortBy === "rating-desc") return b.rating - a.rating;
+    if (sortBy === "rating-asc") return a.rating - b.rating;
+    return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+  });
+
   const average = reviews.length
     ? (reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length).toFixed(1)
     : "-";
-
-  // 마지막 줄이 그리드를 다 채우지 못할 때, 남는 칸(예전엔 회색 배경만 보이던 자리)에 이미지를 채워넣기 위한 개수
-  const remainder = filtered.length % GRID_COLUMNS;
-  const fillerCount = filtered.length > 0 && remainder !== 0 ? GRID_COLUMNS - remainder : 0;
 
   return (
     <section className="pt-28 md:pt-40 pb-20 md:pb-32">
@@ -72,48 +100,79 @@ export default function ReviewsPage({ reviews }: { reviews: Review[] }) {
         </div>
       </motion.div>
 
-      {/* 카테고리 필터 */}
-      <Tabs value={activeCategory} onValueChange={setActiveCategory} className="mb-16">
-        <TabsList className="bg-transparent p-0 h-auto gap-6 justify-start">
-          {categories.map((cat) => (
-            <TabsTrigger
-              key={cat}
-              value={cat}
-              className="text-sm tracking-wide px-0 py-0 h-auto rounded-none bg-transparent shadow-none data-[state=active]:bg-transparent data-[state=active]:shadow-none data-[state=active]:opacity-100 opacity-30 hover:opacity-60 transition-opacity duration-300"
-            >
-              {cat}
-            </TabsTrigger>
-          ))}
-        </TabsList>
+      {/* 카테고리 필터 + 정렬 */}
+      <motion.div
+        className="flex flex-wrap items-center gap-3 mb-16"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.7, ease: "easeOut", delay: 0.15 }}
+      >
+        <Select value={activeCategory} onValueChange={setActiveCategory}>
+          <SelectTrigger className="w-36 rounded-none">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            {categories.map((cat) => (
+              <SelectItem key={cat} value={cat}>
+                {cat}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
 
-        <TabsContent value={activeCategory} className="mt-16">
-          {/* 후기 카드 그리드 */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filtered.map((review, index) => (
+        <Select value={sortBy} onValueChange={(v) => setSortBy(v as SortValue)}>
+          <SelectTrigger className="w-36 rounded-none">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            {sortOptions.map((opt) => (
+              <SelectItem key={opt.value} value={opt.value}>
+                {opt.label}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </motion.div>
+
+      {/* 후기 리스트 (박스 없이 아바타 + 이름 + 별점 + 후기를 한 줄씩) */}
+      <div className="flex flex-col divide-y divide-black/10">
+        {sorted.map((review, index) => (
               <motion.div
                 key={review.id}
+                className="flex flex-col sm:flex-row gap-6 sm:gap-8 py-10 first:pt-0"
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-40px" }}
-                transition={{ duration: 0.5, delay: (index % GRID_COLUMNS) * 0.05 }}
+                transition={{ duration: 0.5, delay: (index % 4) * 0.05 }}
               >
-                <Card className="rounded-none border border-black/10 shadow-none bg-white p-10 gap-0 h-full">
-                  {/* 별점 */}
-                  <div className="flex gap-1 mb-6">
-                    {Array.from({ length: 5 }).map((_, i) => (
-                      <Star
-                        key={i}
-                        className={`size-4 ${i < review.rating ? "fill-black text-black" : "fill-black/10 text-black/10"}`}
-                      />
-                    ))}
-                  </div>
+                {/* 시공 사진 */}
+                <div className="relative w-full sm:w-48 aspect-[4/3] sm:aspect-square overflow-hidden bg-black/5 shrink-0">
+                  <Image
+                    src={getReviewImage(review, index)}
+                    alt={`${review.category} 시공 사진`}
+                    fill
+                    className="object-cover"
+                    sizes="(max-width: 640px) 100vw, 192px"
+                  />
+                </div>
 
-                  <p className="text-sm text-black/60 leading-relaxed mb-8">
-                    &ldquo;{review.content}&rdquo;
-                  </p>
-
-                  <div className="flex items-center justify-between mt-auto pt-6 border-t border-black/10">
-                    <p className="text-sm font-medium">{review.name}</p>
+                <div className="flex-1 min-w-0">
+                  <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-2 mb-3">
+                    <div className="flex items-center gap-3">
+                      {/* 아바타 */}
+                      <div className="size-9 rounded-full overflow-hidden bg-black/5 shrink-0">
+                        <AvatarPlaceholder />
+                      </div>
+                      <p className="text-base font-medium">{review.name}</p>
+                      <div className="flex gap-0.5">
+                        {Array.from({ length: 5 }).map((_, i) => (
+                          <Star
+                            key={i}
+                            className={`size-3.5 ${i < review.rating ? "fill-black text-black" : "fill-black/10 text-black/10"}`}
+                          />
+                        ))}
+                      </div>
+                    </div>
                     <div className="flex gap-2">
                       <Badge variant="secondary" className="rounded-none text-xs text-black/40 bg-black/5">
                         {review.category}
@@ -123,32 +182,14 @@ export default function ReviewsPage({ reviews }: { reviews: Review[] }) {
                       </Badge>
                     </div>
                   </div>
-                </Card>
-              </motion.div>
-            ))}
 
-            {/* 마지막 줄에 빈 칸이 남으면(예전엔 회색 배경만 보이던 자리) 이미지를 채워 넣음 */}
-            {Array.from({ length: fillerCount }).map((_, i) => (
-              <motion.div
-                key={`filler-${i}`}
-                className="relative w-full h-full min-h-64 overflow-hidden"
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-40px" }}
-                transition={{ duration: 0.5, delay: (filtered.length % GRID_COLUMNS) * 0.05 }}
-              >
-                <Image
-                  src="/images/reviews/case-study.jpg"
-                  alt="시공사례"
-                  fill
-                  className="object-cover"
-                  sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                />
+                  <p className="text-base text-black/60 leading-relaxed">
+                    &ldquo;{review.content}&rdquo;
+                  </p>
+                </div>
               </motion.div>
-            ))}
-          </div>
-        </TabsContent>
-      </Tabs>
+        ))}
+      </div>
       </Container>
     </section>
   );

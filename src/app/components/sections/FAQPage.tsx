@@ -47,7 +47,7 @@ export default function FAQPage({ faqs }: { faqs: Faq[] }) {
               <TabsTrigger
                 key={cat}
                 value={cat}
-                className="text-sm tracking-wide px-0 py-0 h-auto rounded-none bg-transparent shadow-none data-[state=active]:bg-transparent data-[state=active]:shadow-none data-[state=active]:opacity-100 opacity-30 hover:opacity-60 transition-opacity duration-300"
+                className="text-sm tracking-wide px-1.5 py-[3px] h-auto rounded-none bg-transparent shadow-none data-[state=active]:bg-transparent data-[state=active]:shadow-none data-[state=active]:opacity-100 opacity-30 hover:opacity-60 transition-opacity duration-300"
               >
                 {cat}
               </TabsTrigger>
