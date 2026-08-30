@@ -24,7 +24,7 @@ export interface AboutContentInput {
   title: string;
   body: string;
   imageUrl: string;
-  stats: { number: string; label: string }[];
+  stats: { title: string; description: string }[];
 }
 
 export async function saveAboutContent(input: AboutContentInput) {

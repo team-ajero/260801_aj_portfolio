@@ -81,23 +81,24 @@ export default function ReviewsPage({ reviews }: { reviews: Review[] }) {
 
       {/* 통계 요약 */}
       <motion.div
-        className="flex gap-12 mb-16"
+        className="mb-16"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.7, ease: "easeOut", delay: 0.1 }}
       >
-        <div>
-          <p className="text-2xl md:text-3xl font-light mb-1">{average}</p>
-          <p className="text-xs tracking-widest uppercase text-black/40">평균 평점</p>
+        <div className="flex gap-12">
+          <div>
+            <p className="text-2xl md:text-3xl font-light mb-1">{average}</p>
+            <p className="text-xs tracking-widest uppercase text-black/40">평균 평점</p>
+          </div>
+          <div>
+            <p className="text-2xl md:text-3xl font-light mb-1">{reviews.length}+</p>
+            <p className="text-xs tracking-widest uppercase text-black/40">고객 후기</p>
+          </div>
         </div>
-        <div>
-          <p className="text-2xl md:text-3xl font-light mb-1">{reviews.length}+</p>
-          <p className="text-xs tracking-widest uppercase text-black/40">고객 후기</p>
-        </div>
-        <div>
-          <p className="text-2xl md:text-3xl font-light mb-1">98%</p>
-          <p className="text-xs tracking-widest uppercase text-black/40">재추천 의향</p>
-        </div>
+        <p className="text-sm text-black/50 mt-4">
+          많은 고객들이 지인 추천을 통해 다시 찾아주고 있습니다.
+        </p>
       </motion.div>
 
       {/* 카테고리 필터 + 정렬 */}

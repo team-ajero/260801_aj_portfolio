@@ -56,7 +56,7 @@ export const aboutContent = pgTable("about_content", {
   body: text("body").notNull(),
   imageUrl: text("image_url").notNull(),
   stats: jsonb("stats")
-    .$type<{ number: string; label: string }[]>()
+    .$type<{ title: string; description: string }[]>()
     .notNull()
     .default([]),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),

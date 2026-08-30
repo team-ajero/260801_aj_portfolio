@@ -50,9 +50,9 @@ const emptyContent: AboutContentInput = {
   body: "",
   imageUrl: "",
   stats: [
-    { number: "", label: "" },
-    { number: "", label: "" },
-    { number: "", label: "" },
+    { title: "", description: "" },
+    { title: "", description: "" },
+    { title: "", description: "" },
   ],
 };
 
@@ -105,7 +105,7 @@ function StorySection({ initialContent }: { initialContent: AboutContent | null 
     });
   };
 
-  const updateStat = (index: number, key: "number" | "label", value: string) => {
+  const updateStat = (index: number, key: "title" | "description", value: string) => {
     setContent((c) => ({
       ...c,
       stats: c.stats.map((s, i) => (i === index ? { ...s, [key]: value } : s)),
@@ -147,19 +147,19 @@ function StorySection({ initialContent }: { initialContent: AboutContent | null 
           />
         </div>
         <div className="flex flex-col gap-2">
-          <Label>통계 (숫자 / 라벨)</Label>
+          <Label>강점 (제목 / 설명)</Label>
           <div className="grid grid-cols-3 gap-4">
             {content.stats.map((stat, i) => (
               <div key={i} className="flex flex-col gap-2">
                 <Input
-                  value={stat.number}
-                  onChange={(e) => updateStat(i, "number", e.target.value)}
-                  placeholder="500+"
+                  value={stat.title}
+                  onChange={(e) => updateStat(i, "title", e.target.value)}
+                  placeholder="체계적 프로세스"
                 />
                 <Input
-                  value={stat.label}
-                  onChange={(e) => updateStat(i, "label", e.target.value)}
-                  placeholder="완료 프로젝트"
+                  value={stat.description}
+                  onChange={(e) => updateStat(i, "description", e.target.value)}
+                  placeholder="상담부터 준공, 사후관리까지"
                 />
               </div>
             ))}

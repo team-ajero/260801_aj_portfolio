@@ -12,7 +12,8 @@ import { getServices } from "@/lib/actions/services";
 const FALLBACK_HERO = {
   eyebrow: "Interior Design Studio",
   headline: "공간이 말하는 당신의 이야기",
-  description: "15년의 시공 경험으로 완성된 공간,\n고객의 라이프스타일에 맞는 인테리어를 제안합니다.",
+  description:
+    "상담부터 준공까지, 체계적인 시공 프로세스로 완성된 공간,\n고객의 라이프스타일에 맞는 인테리어를 제안합니다.",
   primaryCtaLabel: "시공사례 보기",
   primaryCtaHref: "/works",
   secondaryCtaLabel: "견적 문의",
