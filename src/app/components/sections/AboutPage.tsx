@@ -54,18 +54,18 @@ export default function AboutPage({ content, team, history }: AboutPageProps) {
             </h2>
             <p className="text-base text-black/50 leading-relaxed mb-6">
               {content?.body ??
-                "저희는 단순한 시공을 넘어, 고객의 라이프스타일을 이해하고 그에 맞는 공간을 설계합니다. 상담부터 준공 후 사후관리까지 전 과정을 직접 책임지며, 신뢰할 수 있는 파트너가 되고자 합니다."}
+                "상담부터 설계, 시공, 준공 후 관리까지 전 과정을 체계적으로 진행합니다. 고객의 라이프스타일과 공간의 쓰임을 함께 고민하며, 신뢰할 수 있는 인테리어를 완성합니다."}
             </p>
 
-            <div className="flex gap-12 mt-12">
+            <div className="flex flex-col sm:flex-row gap-8 sm:gap-12 mt-12">
               {(content?.stats ?? [
-                { number: "500+", label: "완료 프로젝트" },
-                { number: "15Y", label: "시공 경력" },
-                { number: "98%", label: "고객 만족도" },
+                { title: "체계적 프로세스", description: "상담부터 준공, 사후관리까지" },
+                { title: "맞춤형 설계", description: "고객 라이프스타일에 맞춘 공간 설계" },
+                { title: "꼼꼼한 시공관리", description: "전 과정 품질 점검" },
               ]).map((stat) => (
-                <div key={stat.label}>
-                  <p className="text-2xl md:text-3xl font-light mb-1">{stat.number}</p>
-                  <p className="text-xs tracking-widest uppercase text-black/40">{stat.label}</p>
+                <div key={stat.title} className="sm:flex-1">
+                  <p className="text-base md:text-lg font-normal mb-1">{stat.title}</p>
+                  <p className="text-xs text-black/40 leading-relaxed">{stat.description}</p>
                 </div>
               ))}
             </div>

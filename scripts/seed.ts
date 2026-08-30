@@ -68,7 +68,7 @@ async function seedHero() {
     eyebrow: "Interior Design Studio",
     headline: "공간이 말하는 당신의 이야기",
     description:
-      "15년의 시공 경험으로 완성된 공간,\n고객의 라이프스타일에 맞는 인테리어를 제안합니다.",
+      "상담부터 준공까지, 체계적인 시공 프로세스로 완성된 공간,\n고객의 라이프스타일에 맞는 인테리어를 제안합니다.",
     primaryCtaLabel: "시공사례 보기",
     primaryCtaHref: "/works",
     secondaryCtaLabel: "견적 문의",
@@ -133,12 +133,12 @@ async function seedAbout() {
       eyebrow: "Our Story",
       title: "공간을 바꾸면\n일상이 달라집니다",
       body:
-        "저희는 단순한 시공을 넘어, 고객의 라이프스타일을 이해하고 그에 맞는 공간을 설계합니다. 상담부터 준공 후 사후관리까지 전 과정을 직접 책임지며, 신뢰할 수 있는 파트너가 되고자 합니다.",
+        "상담부터 설계, 시공, 준공 후 관리까지 전 과정을 체계적으로 진행합니다. 고객의 라이프스타일과 공간의 쓰임을 함께 고민하며, 신뢰할 수 있는 인테리어를 완성합니다.",
       imageUrl: "/images/about/story.jpg",
       stats: [
-        { number: "500+", label: "완료 프로젝트" },
-        { number: "15Y", label: "시공 경력" },
-        { number: "98%", label: "고객 만족도" },
+        { title: "체계적 프로세스", description: "상담부터 준공, 사후관리까지" },
+        { title: "맞춤형 설계", description: "고객 라이프스타일에 맞춘 공간 설계" },
+        { title: "꼼꼼한 시공관리", description: "전 과정 품질 점검" },
       ],
     });
     console.log("[seed] about content");
@@ -158,7 +158,7 @@ async function seedAbout() {
   const existingHistory = await db.select().from(companyHistory).limit(1);
   if (existingHistory.length === 0) {
     await db.insert(companyHistory).values([
-      { year: "2024", event: "누적 시공 500건 돌파", order: 0 },
+      { year: "2024", event: "다양한 공간의 시공 경험을 꾸준히 쌓아가고 있습니다.", order: 0 },
       { year: "2022", event: "상업공간 전담팀 신설", order: 1 },
       { year: "2019", event: "서울 강남 스튜디오 오픈", order: 2 },
       { year: "2011", event: "회사 설립", order: 3 },
