@@ -6,7 +6,7 @@ import type { Metadata } from "next";
  */
 export const SITE_URL = "https://ajero-interior.vercel.app";
 export const SITE_NAME = "Interior Studio";
-export const OG_IMAGE = "/images/og-image.jpg";
+export const OG_IMAGE = "/images/og-image.png";
 
 export const DEFAULT_TITLE = "Interior Studio | 인테리어 시공사례 & 포트폴리오";
 export const DEFAULT_DESCRIPTION =
